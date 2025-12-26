@@ -10,6 +10,7 @@ import Dashboard from "@/pages/dashboard";
 import DevicesPage from "@/pages/devices";
 import NotesPage from "@/pages/notes";
 import ChecklistsPage from "@/pages/checklists";
+import ScriptsPage from "@/pages/scripts";
 import SettingsPage from "@/pages/settings";
 import { useStore } from "@/lib/store";
 
@@ -43,6 +44,12 @@ function Router() {
       <Route path="/notes">
         <Layout>
           <ProtectedRoute component={NotesPage} />
+        </Layout>
+      </Route>
+
+      <Route path="/scripts">
+        <Layout>
+          <ProtectedRoute component={ScriptsPage} />
         </Layout>
       </Route>
       

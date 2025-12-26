@@ -40,6 +40,21 @@ export interface Checklist {
   category: string;
 }
 
+export type ScriptType = 'bash' | 'python' | 'powershell' | 'javascript' | 'other';
+
+export interface Script {
+  id: string;
+  name: string;
+  language: ScriptType;
+  description: string;
+  content: string;
+  tags: string[];
+  createdAt: string;
+  updatedAt: string;
+  linkedDeviceIds?: string[];
+  linkedChecklistIds?: string[];
+}
+
 export interface User {
   username: string;
   token: string;
@@ -50,6 +65,7 @@ interface AppState {
   devices: Device[];
   notes: Note[];
   checklists: Checklist[];
+  scripts: Script[];
   
   login: (username: string) => void;
   logout: () => void;
@@ -65,6 +81,10 @@ interface AppState {
   addChecklist: (checklist: Omit<Checklist, 'id'>) => void;
   updateChecklist: (id: string, checklist: Partial<Checklist>) => void;
   deleteChecklist: (id: string) => void;
+
+  addScript: (script: Omit<Script, 'id' | 'createdAt' | 'updatedAt'>) => void;
+  updateScript: (id: string, script: Partial<Script>) => void;
+  deleteScript: (id: string) => void;
   
   importData: (data: string) => boolean;
   exportData: () => string;
@@ -97,6 +117,19 @@ const initialChecklists: Checklist[] = [
   }
 ];
 
+const initialScripts: Script[] = [
+  {
+    id: '1',
+    name: 'Update & Upgrade',
+    language: 'bash',
+    description: 'Standard update command for Debian/Ubuntu systems',
+    content: '#!/bin/bash\n\nsudo apt update && sudo apt upgrade -y\nsudo apt autoremove -y',
+    tags: ['maintenance', 'linux'],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+];
+
 export const useStore = create<AppState>()(
   persist(
     (set, get) => ({
@@ -104,6 +137,7 @@ export const useStore = create<AppState>()(
       devices: initialDevices,
       notes: initialNotes,
       checklists: initialChecklists,
+      scripts: initialScripts,
 
       login: (username) => set({ user: { username, token: 'mock-token' } }),
       logout: () => set({ user: null }),
@@ -143,15 +177,35 @@ export const useStore = create<AppState>()(
         checklists: state.checklists.filter(c => c.id !== id)
       })),
 
+      addScript: (script) => set((state) => ({
+        scripts: [...state.scripts, { 
+          ...script, 
+          id: Math.random().toString(36).substring(7),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        }]
+      })),
+      updateScript: (id, updated) => set((state) => ({
+        scripts: state.scripts.map(s => s.id === id ? { ...s, ...updated, updatedAt: new Date().toISOString() } : s)
+      })),
+      deleteScript: (id) => set((state) => ({
+        scripts: state.scripts.filter(s => s.id !== id)
+      })),
+
       exportData: () => {
-        const { devices, notes, checklists } = get();
-        return JSON.stringify({ devices, notes, checklists });
+        const { devices, notes, checklists, scripts } = get();
+        return JSON.stringify({ devices, notes, checklists, scripts });
       },
       importData: (jsonStr) => {
         try {
           const data = JSON.parse(jsonStr);
           if (data.devices && data.notes && data.checklists) {
-            set({ devices: data.devices, notes: data.notes, checklists: data.checklists });
+            set({ 
+              devices: data.devices, 
+              notes: data.notes, 
+              checklists: data.checklists,
+              scripts: data.scripts || [] // Handle backward compatibility
+            });
             return true;
           }
           return false;

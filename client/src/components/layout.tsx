@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { LayoutDashboard, Server, StickyNote, CheckSquare, Settings, LogOut, Shield, Menu } from "lucide-react";
+import { LayoutDashboard, Server, StickyNote, CheckSquare, Settings, LogOut, Shield, Menu, Code } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -19,6 +19,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     { href: "/", icon: LayoutDashboard, label: "Dashboard" },
     { href: "/devices", icon: Server, label: "Devices" },
     { href: "/notes", icon: StickyNote, label: "Lab Notes" },
+    { href: "/scripts", icon: Code, label: "Scripts" },
     { href: "/checklists", icon: CheckSquare, label: "Checklists" },
     { href: "/settings", icon: Settings, label: "Settings" },
   ];

@@ -40,15 +40,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {navItems.map((item) => {
           const isActive = location === item.href;
           return (
-            <Link key={item.href} href={item.href} onClick={() => setIsMobileOpen(false)}>
-              <a className={`flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-200 group ${
+            <Link 
+              key={item.href} 
+              href={item.href} 
+              onClick={() => setIsMobileOpen(false)}
+              className={`flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-200 group ${
                 isActive 
                   ? "bg-sidebar-accent text-sidebar-primary border-l-2 border-sidebar-primary" 
                   : "text-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
-              }`}>
+              }`}
+            >
                 <item.icon size={18} className={isActive ? "text-sidebar-primary" : "group-hover:text-sidebar-foreground"} />
                 <span className="font-medium text-sm">{item.label}</span>
-              </a>
             </Link>
           );
         })}

@@ -8,7 +8,7 @@ COPY package.json package-lock.json ./
 # Install dependencies using npm ci (clean install)
 # We use --omit=dev to avoid installing devDependencies in production
 # but for this build we need them to build the client
-RUN npm ci
+RUN npm install -g tsx && npm ci
 
 # Copy source code
 COPY . .
